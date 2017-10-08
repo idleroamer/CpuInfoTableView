@@ -34,6 +34,7 @@ Rectangle {
                     var widgets = []
                     if (model)
                     {
+                        // generate table coloumns according to the given dataheaders of the model
                         var roleList = model.dataHeaders
                         for(var i=0; i<roleList.length; i++)
                         {
