@@ -62,7 +62,7 @@ int CpuInfoItem::parseCpuInfo(const QString &fileContent)
 
     QStringList cpuBlocks = fileContent.split("\n\n");
     // remove empty blocks
-    cpuBlocks.removeOne(QString(""));
+    cpuBlocks.removeAll(QString(""));
 
     if (collectCpuDetail(cpuBlocks))
         m_cpuCount = cpuBlocks.length();
@@ -90,24 +90,21 @@ QVariant CpuInfoItem::data(const QModelIndex & index, int role) const {
 
 QStringList CpuInfoItem::headers() const
 {
-    QVector<QPair<int, QByteArray> > roles;
-    int i = 1;
-    for(const QString& header : m_cpuDetailHeaders)
-        roles.append(qMakePair(Qt::UserRole + i++, QByteArray(header.toUtf8())));
+    QVector<QPair<int, QByteArray> > roles = dataRoles();
     QStringList headers;
-    for (auto it = roles.begin(); it != roles.end(); ++it)
-        headers.append(it->second);
+    for (const QPair<int, QByteArray>& role : roles)
+        headers.append(role.second);
 
     return headers;
 }
 
 QHash<int, QByteArray> CpuInfoItem::dataHeaders() const
 {
-    QHash<int, QByteArray>  roles;
-    int i = 1;
-    for(const QString& header : m_cpuDetailHeaders)
-        roles[Qt::UserRole + i++] = QByteArray(header.toUtf8());
-    return roles;
+    QVector<QPair<int, QByteArray> > roles = dataRoles();
+    QHash<int, QByteArray> headers;
+    for (const QPair<int, QByteArray>& role : roles)
+        headers[role.first] = role.second;
+    return headers;
 }
 
 void CpuInfoItem::clearData()
@@ -140,6 +137,16 @@ bool CpuInfoItem::collectCpuDetail(const QStringList& cpuBlocks)
     m_cpuDetailHeaders.removeDuplicates();
     return !m_cpuDetailHeaders.empty();
 }
+
+QVector<QPair<int, QByteArray> > CpuInfoItem::dataRoles() const
+{
+    QVector<QPair<int, QByteArray> > roles;
+    int i = 1;
+    for(const QString& header : m_cpuDetailHeaders)
+        roles.append(qMakePair(Qt::UserRole + i++, QByteArray(header.toUtf8())));
+    return roles;
+}
+
 void CpuInfoItem::timerEvent(QTimerEvent * ev) {
     if (ev->timerId() != m_notifyTimer.timerId()) return;
 
