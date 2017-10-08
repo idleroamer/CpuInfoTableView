@@ -23,13 +23,13 @@ public:
 
     int cpuCount() const;
     /**
-     * @brief whether to track the cpu info
+     * @brief get the tracking status
      * @return
      */
     bool getTrack() const;
     /**
-     * @brief set to track the cpu info
-     * @param track
+     * @brief set/unset to track the cpu info
+     * @param[in] track
      */
     void setTrack(const bool track);
 
@@ -53,8 +53,17 @@ signals:
     void dataHeadersChanged();
 
 private:
+    /**
+     * @brief clear the read-in file data
+     */
     void clearData();
+    /**
+     * @brief generate a unique table headers and corresponding values for all give cpu info
+     * @param[in] cpuBlocks: each block contains a single cpu info
+     * @return
+     */
     bool collectCpuDetail(const QStringList& cpuBlocks);
+    QVector<QPair<int, QByteArray> > dataRoles() const;
     int m_cpuCount;
     int m_timerInterval;
     bool m_track;
