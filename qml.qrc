@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>view.qml</file>
+        <file>fallback.qml</file>
+    </qresource>
+</RCC>
